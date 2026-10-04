@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>THE PENGUIN: BEYOND THE DOOR — 3D Browser Horror Adventure</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Three.js (r128) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- WebGL 3D Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Screen Atmosphere & Post-FX Overlays -->
+  <div id="screen-fade" class="screen-effect"></div>
+  <div id="damage-vignette" class="screen-effect"></div>
+  <div class="screen-effect cinematic-vignette"></div>
+
+  <!-- Interactive Crosshair -->
+  <div class="crosshair">
+    <div class="crosshair-dot"></div>
+    <div class="crosshair-line top"></div>
+    <div class="crosshair-line bottom"></div>
+    <div class="crosshair-line left"></div>
+    <div class="crosshair-line right"></div>
+  </div>
+
+  <!-- Contextual Floating Interaction Prompt -->
+  <div id="interaction-prompt" class="interaction-prompt">PRESS [E] TO INTERACT</div>
+
+  <!-- In-Game HUD -->
+  <div id="hud-container" class="hud-container">
+    <!-- Top HUD: Compass & Objectives -->
+    <div class="hud-top">
+      <div class="hud-objective">
+        <div id="hud-objective-text" class="hud-obj-title">LEVEL 1: THE PRIMEVAL FOREST</div>
+        <div id="hud-objective-sub" class="hud-obj-sub">Follow the winding dirt path deeper into the woods.</div>
+      </div>
+
+      <div class="compass-container">
+        <div class="compass-needle"></div>
+        <div id="compass-tape" class="compass-tape">
+          <span>N</span> · · · <span>045</span> · · · <span>E</span> · · · <span>135</span> · · · <span>S</span> · · · <span>225</span> · · · <span>W</span> · · · <span>315</span> · · · <span>N</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom HUD: Status Bars & Tactical Weapon -->
+    <div class="hud-bottom">
+      <div class="hud-player-status">
+        <div class="status-row">
+          <div class="status-header">
+            <span class="status-label">HEALTH</span>
+            <span id="hud-health-text" class="status-value">100 / 100</span>
+          </div>
+          <div class="bar-bg">
+            <div id="hud-health-fill" class="bar-fill health" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="status-row">
+          <div class="status-header">
+            <span class="status-label">STAMINA</span>
+            <span class="status-value">SPRINT</span>
+          </div>
+          <div class="bar-bg">
+            <div id="hud-stamina-fill" class="bar-fill stamina" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-weapon-status">
+        <div id="hud-weapon-name" class="weapon-name">PEN-9 CARBINE</div>
+        <div id="hud-ammo-text" class="weapon-ammo">12 / 60</div>
+        <div class="weapon-caliber">9x19MM TACTICAL HOLLOWPOINT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN START MENU -->
+  <div id="main-menu" class="menu-overlay active">
+    <div class="menu-card">
+      <div class="menu-badge">3D Browser Horror Adventure</div>
+      <h1 class="menu-title">THE PENGUIN<br><span style="color: var(--accent-cyan);">BEYOND THE DOOR</span></h1>
+      <p class="menu-subtitle">
+        You are an armed operative navigating a dark primeval forest that gradually distorts into an infinite non-euclidean labyrinth inspired by the Backrooms.
+      </p>
+
+      <div class="menu-actions">
+        <button id="btn-play" class="game-btn primary">ENTER THE FOREST</button>
+        <button id="btn-chapters" class="game-btn">CHAPTER SELECT</button>
+        <button id="btn-settings" class="game-btn">SETTINGS</button>
+        <button id="btn-controls" class="game-btn">CONTROLS GUIDE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAUSE MENU (ESC) -->
+  <div id="pause-menu" class="menu-overlay">
+    <div class="menu-card">
+      <div class="menu-badge">GAME PAUSED</div>
+      <h2 class="menu-title" style="font-size: 28px;">EXPEDITION SUSPENDED</h2>
+      <p class="menu-subtitle">Pointer lock released. Resume or adjust operational settings.</p>
+
+      <div class="menu-actions">
+        <button id="btn-resume" class="game-btn primary">RESUME EXPEDITION</button>
+        <button id="btn-pause-settings" class="game-btn">SETTINGS</button>
+        <button id="btn-pause-controls" class="game-btn">CONTROLS</button>
+        <button id="btn-restart" class="game-btn danger">RESTART CHECKPOINT</button>
+        <button id="btn-quit-menu" class="game-btn">ABORT TO MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER MENU -->
+  <div id="game-over-menu" class="menu-overlay">
+    <div class="menu-card">
+      <div class="menu-badge" style="border-color: var(--accent-red); color: var(--accent-red);">CRITICAL FAILURE</div>
+      <h2 class="menu-title" style="color: var(--accent-red); font-size: 32px;">SIGNAL LOST</h2>
+      <p class="menu-subtitle">You succumbed to the anomalies of the labyrinth.</p>
+
+      <div class="menu-actions">
+        <button id="btn-retry" class="game-btn primary">RETRY AT CHECKPOINT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VICTORY MENU -->
+  <div id="victory-menu" class="menu-overlay">
+    <div class="menu-card">
+      <div class="menu-badge" style="border-color: #22c55e; color: #22c55e;">ANOMALY ESCAPED</div>
+      <h2 class="menu-title" style="color: #22c55e; font-size: 30px;">REALITY RESTORED</h2>
+      <p class="menu-subtitle">You crossed the final celestial threshold and broke free from the infinite dimension.</p>
+
+      <div class="stat-box">
+        <div class="stat-item">
+          <span>SURVIVAL TIME</span>
+          <strong id="stat-time">0m 00s</strong>
+        </div>
+        <div class="stat-item">
+          <span>RESERVE AMMO</span>
+          <strong id="stat-ammo">60</strong>
+        </div>
+      </div>
+
+      <div class="menu-actions">
+        <button id="btn-victory-restart" class="game-btn primary">RETURN TO TITLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">SYSTEM SETTINGS</h3>
+        <button class="btn-close-modal">&times;</button>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>MOUSE SENSITIVITY</span>
+        </div>
+        <input id="setting-sensitivity" type="range" class="setting-slider" min="1" max="5" step="0.1" value="2.2">
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>CAMERA VIEW MODE</span>
+        </div>
+        <select id="setting-camera-mode" class="setting-select">
+          <option value="fps">First-Person View (Recommended)</option>
+          <option value="tps">Third-Person View (Full Penguin Character)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>MASTER VOLUME</span>
+        </div>
+        <input id="setting-master-vol" type="range" class="setting-slider" min="0" max="1" step="0.05" value="0.8">
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>SOUND EFFECTS VOLUME</span>
+        </div>
+        <input id="setting-sfx-vol" type="range" class="setting-slider" min="0" max="1" step="0.05" value="0.9">
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-label">
+          <span>AMBIENCE & MUSIC VOLUME</span>
+        </div>
+        <input id="setting-music-vol" type="range" class="setting-slider" min="0" max="1" step="0.05" value="0.6">
+      </div>
+
+      <button class="game-btn primary btn-close-modal" style="width: 100%; margin-top: 16px;">APPLY &amp; CLOSE</button>
+    </div>
+  </div>
+
+  <!-- CONTROLS MODAL -->
+  <div id="controls-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">OPERATIONAL CONTROLS</h3>
+        <button class="btn-close-modal">&times;</button>
+      </div>
+
+      <div class="controls-grid">
+        <div class="control-item">
+          <span>MOVE FORWARD / BACK / SIDES</span>
+          <span class="key-badge">W A S D</span>
+        </div>
+        <div class="control-item">
+          <span>TACTICAL SPRINT</span>
+          <span class="key-badge">SHIFT</span>
+        </div>
+        <div class="control-item">
+          <span>JUMP / VAULT</span>
+          <span class="key-badge">SPACE</span>
+        </div>
+        <div class="control-item">
+          <span>360° MOUSE LOOK</span>
+          <span class="key-badge">MOUSE</span>
+        </div>
+        <div class="control-item">
+          <span>FIRE PEN-9 CARBINE</span>
+          <span class="key-badge">LEFT CLICK</span>
+        </div>
+        <div class="control-item">
+          <span>AIM DOWN SIGHTS (ADS)</span>
+          <span class="key-badge">RIGHT CLICK</span>
+        </div>
+        <div class="control-item">
+          <span>RELOAD WEAPON</span>
+          <span class="key-badge">R</span>
+        </div>
+        <div class="control-item">
+          <span>INTERACT / OPEN DOOR</span>
+          <span class="key-badge">E</span>
+        </div>
+        <div class="control-item">
+          <span>TOGGLE 1ST / 3RD PERSON</span>
+          <span class="key-badge">V</span>
+        </div>
+        <div class="control-item">
+          <span>PAUSE / ESCAPE</span>
+          <span class="key-badge">ESC</span>
+        </div>
+      </div>
+
+      <button class="game-btn primary btn-close-modal" style="width: 100%;">ACKNOWLEDGED</button>
+    </div>
+  </div>
+
+  <!-- CHAPTER SELECT MODAL -->
+  <div id="chapters-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">MISSION CHAPTER SELECT</h3>
+        <button class="btn-close-modal">&times;</button>
+      </div>
+
+      <div class="chapters-grid">
+        <div class="chapter-card" data-level="1">
+          <div class="chapter-info">
+            <h4>Chapter 1: The Primeval Forest</h4>
+            <p>Begin on the dirt path under the dense canopy.</p>
+          </div>
+          <span class="key-badge">ZONE 1</span>
+        </div>
+
+        <div class="chapter-card" data-level="2">
+          <div class="chapter-info">
+            <h4>Chapter 2: The Shadow Stalkers</h4>
+            <p>Defend yourself against spectral entities in the fog.</p>
+          </div>
+          <span class="key-badge">ZONE 2</span>
+        </div>
+
+        <div class="chapter-card" data-level="3">
+          <div class="chapter-info">
+            <h4>Chapter 3: The Ancient Monolith</h4>
+            <p>Discover the towering rune door in the clearing.</p>
+          </div>
+          <span class="key-badge">ZONE 3</span>
+        </div>
+
+        <div class="chapter-card" data-level="4">
+          <div class="chapter-info">
+            <h4>Chapter 4: The Yellow Liminality</h4>
+            <p>Backrooms Level 0: damp carpet and buzzing fluorescent tubes.</p>
+          </div>
+          <span class="key-badge">ZONE 4</span>
+        </div>
+
+        <div class="chapter-card" data-level="5">
+          <div class="chapter-info">
+            <h4>Chapter 5: The Colossal Void</h4>
+            <p>Megalopolis: 120m Giant Door and the Shadow Colossus.</p>
+          </div>
+          <span class="key-badge">ZONE 5</span>
+        </div>
+
+        <div class="chapter-card" data-level="6">
+          <div class="chapter-info">
+            <h4>Chapter 6: The Submerged Baths</h4>
+            <p>The Poolrooms: shallow water, tiled halls, and celestial exit.</p>
+          </div>
+          <span class="key-badge">ZONE 6</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Engine Scripts in Dependency Order -->
+  <script src="js/audio.js"></script>
+  <script src="js/textures.js"></script>
+  <script src="js/penguin.js"></script>
+  <script src="js/gun.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
