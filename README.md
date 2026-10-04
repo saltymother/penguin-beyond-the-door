@@ -2,7 +2,8 @@
 
 A fully playable **3D First-Person Adventure/Psychological Horror Game** built to run directly in any modern desktop browser.
 
-🎮 **[PLAY LIVE ON GITHUB PAGES](https://saltymother.github.io/penguin-beyond-the-door/)** 🎮
+🎮 **[PLAY LIVE ON GITHUB PAGES](https://saltymother.github.io/penguin-beyond-the-door/)** 🎮  
+📱 *Full Mobile & Tablet support with on-screen virtual analog joystick and touch action buttons!*
 
 ---
 
@@ -15,20 +16,20 @@ At the terminus of the trail stands an **Ancient Monolithic Door** etched with g
 
 ---
 
-## 🕹️ CONTROLS
+## 🕹️ CONTROLS (Desktop & Mobile)
 
-| Action | Control |
-|---|---|
-| **Movement** | `W` `A` `S` `D` |
-| **Tactical Sprint** | `Shift` (Drains Stamina) |
-| **Jump / Vault** | `Space` |
-| **Look Around** | `Mouse` (Full 360° Pointer Lock) |
-| **Fire PEN-9** | `Left Mouse Button` |
-| **Aim Down Sights (ADS)** | `Right Mouse Button` |
-| **Tactical Reload** | `R` |
-| **Interact / Open Door / Pick Ammo** | `E` |
-| **Toggle 1st / 3rd Person View** | `V` |
-| **Pause / Resume** | `Esc` |
+| Action | Desktop Keyboard/Mouse | Mobile Touchscreen |
+|---|---|---|
+| **Movement** | `W` `A` `S` `D` | Virtual Analog Joystick (Left thumb) |
+| **Tactical Sprint** | `Shift` (Drains Stamina) | `⚡ SPRINT` Button (Toggle) |
+| **Jump / Vault** | `Space` | `🦘 JUMP` Button |
+| **Look Around** | `Mouse` (Pointer Lock) | Drag / Swipe Right Side of Screen |
+| **Fire PEN-9** | `Left Mouse Button` | `🎯 FIRE` Button |
+| **Aim Down Sights (ADS)** | `Right Mouse Button` | `🔍 ADS` Button |
+| **Tactical Reload** | `R` | `🔄 RELOAD` Button |
+| **Interact / Open Door** | `E` | `🚪 USE [E]` Button |
+| **Toggle 1st / 3rd Person** | `V` | `📷 1P/3P` Button |
+| **Pause / Resume** | `Esc` | `⏸ PAUSE` Button |
 
 ---
 

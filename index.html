@@ -314,6 +314,59 @@
           <span class="key-badge">ZONE 6</span>
         </div>
       </div>
+  <!-- MOBILE TOUCH CONTROLS (Auto-enabled for touch & mobile devices) -->
+  <div id="mobile-controls" class="mobile-controls-layer">
+    <!-- Left: Virtual Analog Joystick for 360° Movement -->
+    <div id="joystick-zone" class="joystick-zone">
+      <div id="joystick-base" class="joystick-base">
+        <div id="joystick-knob" class="joystick-knob"></div>
+      </div>
+      <div class="joystick-hint">MOVE / STRAFE</div>
+    </div>
+
+    <!-- Right: Touch Swipe Look Zone -->
+    <div id="touch-look-zone" class="touch-look-zone">
+      <div class="touch-look-hint">DRAG TO LOOK 360°</div>
+    </div>
+
+    <!-- Right Side Tactical Action Buttons -->
+    <div class="mobile-actions-cluster">
+      <button id="btn-touch-fire" class="touch-btn btn-fire" aria-label="Fire Weapon">
+        <span class="touch-btn-icon">🎯</span>
+        <span class="touch-btn-label">FIRE</span>
+      </button>
+
+      <button id="btn-touch-aim" class="touch-btn btn-aim" aria-label="Aim Down Sights">
+        <span class="touch-btn-icon">🔍</span>
+        <span class="touch-btn-label">ADS</span>
+      </button>
+
+      <button id="btn-touch-jump" class="touch-btn btn-jump" aria-label="Jump / Vault">
+        <span class="touch-btn-icon">🦘</span>
+        <span class="touch-btn-label">JUMP</span>
+      </button>
+
+      <button id="btn-touch-reload" class="touch-btn btn-reload" aria-label="Reload Ammo">
+        <span class="touch-btn-icon">🔄</span>
+        <span class="touch-btn-label">RELOAD</span>
+      </button>
+
+      <button id="btn-touch-sprint" class="touch-btn btn-sprint" aria-label="Toggle Sprint">
+        <span class="touch-btn-icon">⚡</span>
+        <span class="touch-btn-label">SPRINT</span>
+      </button>
+
+      <button id="btn-touch-interact" class="touch-btn btn-interact" aria-label="Interact / Open Door">
+        <span class="touch-btn-icon">🚪</span>
+        <span class="touch-btn-label">USE [E]</span>
+      </button>
+    </div>
+
+    <!-- Top Floating Quick Toolbar -->
+    <div class="mobile-top-bar">
+      <button id="btn-touch-pause" class="touch-pill-btn" aria-label="Pause Game">⏸ PAUSE</button>
+      <button id="btn-touch-cam" class="touch-pill-btn" aria-label="Toggle Camera View">📷 1P/3P</button>
+      <button id="btn-toggle-touch" class="touch-pill-btn active" aria-label="Toggle Mobile Controls">🎮 TOUCH</button>
     </div>
   </div>
 

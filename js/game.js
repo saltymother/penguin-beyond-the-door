@@ -190,9 +190,10 @@ class GameDirector {
       }
     });
 
-    // Pointer lock change detection
+    // Pointer lock change detection (only on desktop non-touch devices)
     document.addEventListener('pointerlockchange', () => {
-      if (document.pointerLockElement !== this.canvas && this.state === 'playing') {
+      const isTouch = ('ontouchstart' in window) && window.innerWidth <= 900;
+      if (!isTouch && document.pointerLockElement !== this.canvas && this.state === 'playing') {
         this.pauseGame();
       }
     });
@@ -211,7 +212,10 @@ class GameDirector {
     this.state = 'playing';
     this.startTime = performance.now();
 
-    this.canvas.requestPointerLock();
+    const isTouch = ('ontouchstart' in window) && window.innerWidth <= 900;
+    if (!isTouch) {
+      try { this.canvas.requestPointerLock(); } catch (e) {}
+    }
     this.setObjective('LEVEL 1: THE PRIMEVAL FOREST', 'Follow the winding dirt path deeper into the woods.');
   }
 
@@ -219,14 +223,17 @@ class GameDirector {
     if (this.state !== 'playing') return;
     this.state = 'paused';
     this.pauseOverlay.classList.add('active');
-    document.exitPointerLock();
+    try { document.exitPointerLock(); } catch (e) {}
   }
 
   resumeGame() {
     if (this.state !== 'paused') return;
     this.pauseOverlay.classList.remove('active');
     this.state = 'playing';
-    this.canvas.requestPointerLock();
+    const isTouch = ('ontouchstart' in window) && window.innerWidth <= 900;
+    if (!isTouch) {
+      try { this.canvas.requestPointerLock(); } catch (e) {}
+    }
   }
 
   returnToMenu() {
